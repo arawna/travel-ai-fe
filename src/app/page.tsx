@@ -1,95 +1,109 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Image from 'next/image';
+import Link from 'next/link';
+import styles from './page.module.css';
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
+    <div className={styles.container}>
+      <div style={{ position: 'absolute', width: '100%', height: '100%', zIndex: -1 }}>
         <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
+          src="/background-image.jpg"
+          alt="Travel background"
+          fill
+          style={{ objectFit: 'cover' }}
           priority
         />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+      </div>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+      <nav className={styles.navbar}>
+        <div className={styles.navbarContainer}>
+          <Link href="/" className={styles.logo}>
+            TRAVEL AI
+          </Link>
+          <div className={styles.navLinks}>
+            <Link href="/login" className={styles.navLink}>
+              Login
+            </Link>
+            <Link href="/register" className={styles.navLink}>
+              Register
+            </Link>
+          </div>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </nav>
+
+      <section className={styles.heroSection}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.heroTitle}>The Future of Travel Planning with AI</h1>
+          <p className={styles.heroSubtitle}>
+            Travel AI uses specially trained artificial intelligence technology to simplify your travel planning. 
+            Create personalized travel plans based on your budget, preferences, and dreams.
+          </p>
+          <Link href="/register">
+            <button className={styles.ctaButton}>Get Started</button>
+          </Link>
+        </div>
+      </section>
+
+      <section className={styles.featuresSection}>
+        <div className={styles.featuresContainer}>
+          <h2 className={styles.sectionTitle}>Why Travel AI?</h2>
+          <div className={styles.featuresGrid}>
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>✈️</div>
+              <h3 className={styles.featureTitle}>Personalized Travel Plans</h3>
+              <p className={styles.featureDescription}>
+                Create customized travel plans based on your preferences, budget, and travel style. 
+                Our AI assistant recommends the most suitable routes, accommodation options, and activities for you.
+              </p>
+            </div>
+            
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>🗺️</div>
+              <h3 className={styles.featureTitle}>Detailed Itineraries</h3>
+              <p className={styles.featureDescription}>
+                Discover must-see spots, local cuisines, and hidden gems at your destinations. 
+                Our AI assistant creates daily plans to maximize your local experiences.
+              </p>
+            </div>
+            
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>💰</div>
+              <h3 className={styles.featureTitle}>Budget Optimization</h3>
+              <p className={styles.featureDescription}>
+                Get recommendations that help you use your budget most efficiently. 
+                Our AI assistant helps you find the best-priced options without compromising on quality.
+              </p>
+            </div>
+            
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>🔄</div>
+              <h3 className={styles.featureTitle}>Real-Time Updates</h3>
+              <p className={styles.featureDescription}>
+                Receive alternative plans for weather changes, flight cancellations, or other unexpected situations. 
+                Our AI assistant guides you throughout your journey.
+              </p>
+            </div>
+            
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>📱</div>
+              <h3 className={styles.featureTitle}>Easy to Use</h3>
+              <p className={styles.featureDescription}>
+                Plan your travel quickly and easily with our user-friendly interface. 
+                Plan the trip of your dreams with just a few clicks.
+              </p>
+            </div>
+            
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>🌍</div>
+              <h3 className={styles.featureTitle}>Multilingual Support</h3>
+              <p className={styles.featureDescription}>
+                Our AI assistant provides service in multiple languages, allowing users from around the world 
+                to create travel plans in their own language.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

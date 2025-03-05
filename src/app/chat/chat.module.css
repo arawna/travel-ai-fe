@@ -1,0 +1,178 @@
+.backgroundWrapper {
+    background-image: url('/background-image.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+    width: 100%;
+}
+
+.navbarContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 2rem;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+}
+
+.navbarRight {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* İkonlar arasında boşluk */
+}
+
+.iconButton {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.iconButton:hover {
+    background-color: #e0e0e0;
+}
+
+.languageSelector {
+    position: relative;
+}
+
+.languageMenu {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
+    min-width: 120px;
+    z-index: 10;
+}
+
+.languageOption {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.languageOption:hover {
+    background-color: #f5f5f5;
+}
+
+.activeLanguage {
+    font-weight: 600;
+    background-color: #f0f0f0;
+}
+
+/* Responsive tasarım için medya sorguları */
+@media (max-width: 768px) {
+    .navbarContainer {
+        padding: 0 1rem;
+    }
+    
+    .logo {
+        font-size: 1.2rem;
+    }
+} 
+
+.chatGptIconContainer {
+    text-align: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+.chatGptIconText {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    vertical-align: 23px;
+    margin-left: 10px;
+}
+.chatGptPlus {
+    color: black;
+    background-color: rgba(198, 199, 248, 1);
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 10px;
+    vertical-align: 26px;
+    margin-left: 5px;
+    font-weight: 600;
+}
+
+.userSelector {
+    position: relative;
+}
+
+.userMenu {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
+    min-width: 200px;
+    z-index: 10;
+}
+
+.userMenuHeader {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.userMenuName {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.userMenuEmail {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.userMenuDivider {
+    height: 1px;
+    background-color: #f0f0f0;
+    margin: 0.5rem 0;
+}
+
+.userMenuOption {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.userMenuOption:hover {
+    background-color: #f5f5f5;
+}
+
+/* Logout seçeneği için özel stil */
+.userMenuOption:last-child {
+    color: #e53e3e;
+}
+
+.userMenuOption:last-child:hover {
+    background-color: #fff5f5;
+}
