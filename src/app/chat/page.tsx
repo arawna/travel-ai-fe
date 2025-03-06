@@ -25,8 +25,32 @@ export default function ChatPage() {
   const languageMenuRef = useRef<HTMLDivElement | null>(null);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
 
+  const [chatHistory, setChatHistory] = useState<any[]>([
+    {
+      "role": "system",
+      "content": [
+        {
+          "type": "text",
+          "text": "Deneme mesajjjj"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "Deneme cevappp"
+        }
+      ]
+    }
+  ]);
+
   // Form validation schema
   const validationSchema = Yup.object({
+    from: Yup.string()
+      .required('From is required')
+      .min(2, 'From must be at least 2 characters'),
     destination: Yup.string()
       .required('Destination is required')
       .min(2, 'Destination must be at least 2 characters'),
@@ -44,6 +68,7 @@ export default function ChatPage() {
   // Formik setup
   const formik = useFormik({
     initialValues: {
+      from: '',
       destination: '',
       startDate: null,
       endDate: null
@@ -74,7 +99,7 @@ export default function ChatPage() {
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }).catch((error) => {
       });
-    }else{
+    } else {
       router.push("/login")
     }
   }, [searchParams]);
@@ -121,6 +146,13 @@ export default function ChatPage() {
     router.push('/login');
   };
 
+  const [message, setMessage] = useState('');
+  const hanndleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setMessage('');
+    console.log('Message sent');
+  }
+
   return (
     <div className={styles.backgroundWrapper}>
       <nav className={styles.navbar}>
@@ -130,8 +162,8 @@ export default function ChatPage() {
           </Link>
           <div className={styles.navbarRight}>
             <div className={styles.languageSelector} ref={languageMenuRef}>
-              <div 
-                className={styles.iconButton} 
+              <div
+                className={styles.iconButton}
                 onClick={toggleLanguageMenu}
                 title="Change language"
               >
@@ -139,25 +171,25 @@ export default function ChatPage() {
               </div>
               {showLanguageMenu && (
                 <div className={styles.languageMenu}>
-                  <div 
+                  <div
                     className={`${styles.languageOption} ${currentLanguage === 'English' ? styles.activeLanguage : ''}`}
                     onClick={() => changeLanguage('English')}
                   >
                     English
                   </div>
-                  <div 
+                  <div
                     className={`${styles.languageOption} ${currentLanguage === 'Türkçe' ? styles.activeLanguage : ''}`}
                     onClick={() => changeLanguage('Türkçe')}
                   >
                     Türkçe
                   </div>
-                  <div 
+                  <div
                     className={`${styles.languageOption} ${currentLanguage === 'Español' ? styles.activeLanguage : ''}`}
                     onClick={() => changeLanguage('Español')}
                   >
                     Español
                   </div>
-                  <div 
+                  <div
                     className={`${styles.languageOption} ${currentLanguage === 'Français' ? styles.activeLanguage : ''}`}
                     onClick={() => changeLanguage('Français')}
                   >
@@ -167,8 +199,8 @@ export default function ChatPage() {
               )}
             </div>
             <div className={styles.userSelector} ref={userMenuRef}>
-              <div 
-                className={styles.iconButton} 
+              <div
+                className={styles.iconButton}
                 onClick={toggleUserMenu}
                 title="User menu"
               >
@@ -202,20 +234,34 @@ export default function ChatPage() {
         </div>
       </nav>
       <div className={styles.chatGptIconContainer}>
-        <ChatGptIcon/>
+        <ChatGptIcon />
         <span className={styles.chatGptIconText}>ChatGPT</span>
         <span className={styles.chatGptPlus}>Plus</span>
       </div>
-      <Container maxWidth="lg" style={{marginTop: "20px"}}>
+      <Container maxWidth="lg" style={{ marginTop: "20px" }}>
         <form onSubmit={formik.handleSubmit}>
-          <div style={{backgroundColor: 'white', padding: '25px', borderRadius: '15px'}}>
+          <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '15px', opacity: ".95" }}>
             <Grid2 container spacing={2}>
-              <Grid2 size={{xs: 12, md: 4}}>
-                <TextField 
-                  style={{width: "100%"}} 
-                  id="destination" 
+              <Grid2 size={{ xs: 12, md: 3 }}>
+                <TextField
+                  style={{ width: "100%" }}
+                  id="from"
+                  name="from"
+                  label="From"
+                  variant="outlined"
+                  value={formik.values.from}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.from && Boolean(formik.errors.from)}
+                  helperText={formik.touched.from && formik.errors.from}
+                />
+              </Grid2>
+              <Grid2 size={{ xs: 12, md: 3 }}>
+                <TextField
+                  style={{ width: "100%" }}
+                  id="destination"
                   name="destination"
-                  label="Where do you want to go?" 
+                  label="Where do you want to go?"
                   variant="outlined"
                   value={formik.values.destination}
                   onChange={formik.handleChange}
@@ -224,10 +270,10 @@ export default function ChatPage() {
                   helperText={formik.touched.destination && formik.errors.destination}
                 />
               </Grid2>
-              <Grid2 size={{xs: 12, md: 4}}>
+              <Grid2 size={{ xs: 12, md: 3 }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker 
-                    sx={{width: "100%"}} 
+                  <DatePicker
+                    sx={{ width: "100%" }}
                     label="Start Date"
                     value={formik.values.startDate}
                     onChange={(date) => formik.setFieldValue('startDate', date)}
@@ -241,10 +287,10 @@ export default function ChatPage() {
                   />
                 </LocalizationProvider>
               </Grid2>
-              <Grid2 size={{xs: 12, md: 4}}>
+              <Grid2 size={{ xs: 12, md: 3 }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker 
-                    sx={{width: "100%"}} 
+                  <DatePicker
+                    sx={{ width: "100%" }}
                     label="End Date"
                     value={formik.values.endDate}
                     onChange={(date) => formik.setFieldValue('endDate', date)}
@@ -260,17 +306,17 @@ export default function ChatPage() {
               </Grid2>
             </Grid2>
           </div>
-          <div style={{textAlign: "center", marginTop: "20px"}}>
-            <button 
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
+            <button
               type="submit"
               style={{
                 backgroundColor: "#8F55FF",
                 fontSize: "16px",
-                fontWeight: "bold", 
-                color: "white", 
-                padding: "10px 60px", 
-                borderRadius: "15px", 
-                border: "none", 
+                fontWeight: "bold",
+                color: "white",
+                padding: "10px 60px",
+                borderRadius: "15px",
+                border: "none",
                 cursor: "pointer"
               }}
             >
@@ -281,7 +327,57 @@ export default function ChatPage() {
       </Container>
 
       <div>
-        {/* Chat içeriği buraya gelecek */}
+        <Container maxWidth="lg" style={{ padding: "20px" }}>
+          <div style={{
+            background: "white",
+            borderRadius: "15px",
+            height: "500px",
+            padding: "20px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            opacity: ".96"
+          }}>
+            <div className={styles.chatScrollContainer}>
+              <div className={styles.chatContainer}>
+                {chatHistory.map((message, index) => (
+                  <div
+                    key={index}
+                    className={`${styles.messageWrapper} ${message.role === 'user' ? styles.userMessage : styles.systemMessage}`}
+                  >
+                    <div className={styles.messageBubble}>
+                      {message.content.map((content: any, contentIndex: number) => (
+                        <div key={contentIndex}>
+                          {content.type === 'text' && content.text}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <form onSubmit={hanndleSendMessage}>
+              <div className={styles.messageInputContainer}>
+                <textarea
+                  className={styles.messageInput}
+                  placeholder="Type your message here..."
+                  rows={2}
+                  value={message}
+                  onChange={(e) => {
+                    setMessage(e.target.value);
+                  }}
+                />
+                <button type="submit" className={styles.sendButton}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </div>
+        </Container>
       </div>
     </div>
   )

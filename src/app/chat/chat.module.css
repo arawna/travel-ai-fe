@@ -97,7 +97,6 @@
 .chatGptIconContainer {
     text-align: center;
     align-items: center;
-    margin-top: 2rem;
 }
 .chatGptIconText {
     color: white;
@@ -175,4 +174,130 @@
 
 .userMenuOption:last-child:hover {
     background-color: #fff5f5;
+}
+
+.chatScrollContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #8F55FF #F0F0F0;
+  margin-bottom: 10px;
+}
+
+/* Webkit tarayıcılar için özel scrollbar */
+.chatScrollContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chatScrollContainer::-webkit-scrollbar-track {
+  background: #F0F0F0;
+  border-radius: 10px;
+}
+
+.chatScrollContainer::-webkit-scrollbar-thumb {
+  background-color: #8F55FF;
+  border-radius: 10px;
+}
+
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.messageWrapper {
+  display: flex;
+  width: 100%;
+}
+
+.userMessage {
+  justify-content: flex-end;
+}
+
+.systemMessage {
+  justify-content: flex-start;
+}
+
+.messageBubble {
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.userMessage .messageBubble {
+  background-color: #8F55FF;
+  color: white;
+  border-top-right-radius: 4px;
+}
+
+.systemMessage .messageBubble {
+  background-color: #F0F0F0;
+  color: #333;
+  border-top-left-radius: 4px;
+}
+
+/* Responsive tasarım için */
+@media (max-width: 768px) {
+  .messageBubble {
+    max-width: 85%;
+  }
+}
+
+.messageInputContainer {
+  display: flex;
+  align-items: flex-end;
+  margin-top: 20px;
+  border-top: 1px solid #E5E7EB;
+  padding-top: 20px;
+}
+
+.messageInput {
+  flex: 1;
+  min-height: 40px;
+  max-height: 120px;
+  padding: 12px 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.messageInput:focus {
+  border-color: #8F55FF;
+}
+
+.messageInput::placeholder {
+  color: #9CA3AF;
+}
+
+.sendButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-left: 10px;
+  background-color: #8F55FF;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sendButton:hover {
+  background-color: #7B46E3;
+}
+
+.sendButton:active {
+  transform: scale(0.95);
 }
