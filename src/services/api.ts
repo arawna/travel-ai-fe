@@ -2,8 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000", // Çevre değişkeni veya varsayılan değer
-  timeout: 10000, // Zaman aşımı süresi
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000",
   headers: {
     "Content-Type": "application/json",
   },

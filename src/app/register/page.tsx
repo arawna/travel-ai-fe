@@ -58,7 +58,7 @@ export default function Page() {
   });
 
   const handleGoogleBtnClick = () => {
-    window.location.href = "http://localhost:5000/auth/google";
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
   }
 
   return (

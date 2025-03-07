@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useLayoutEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'react-toastify'
 import authService from '@/services/authService'
@@ -15,6 +15,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import dayjs from 'dayjs'
+import chatService from '@/services/chatService'
 
 export default function ChatPage() {
   const router = useRouter();
@@ -24,27 +25,9 @@ export default function ChatPage() {
   const [currentLanguage, setCurrentLanguage] = useState('English');
   const languageMenuRef = useRef<HTMLDivElement | null>(null);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [chatHistory, setChatHistory] = useState<any[]>([
-    {
-      "role": "system",
-      "content": [
-        {
-          "type": "text",
-          "text": "Deneme mesajjjj"
-        }
-      ]
-    },
-    {
-      "role": "user",
-      "content": [
-        {
-          "type": "text",
-          "text": "Deneme cevappp"
-        }
-      ]
-    }
-  ]);
+  const [chatHistory, setChatHistory] = useState<any[]>([]);
 
   // Form validation schema
   const validationSchema = Yup.object({
@@ -75,12 +58,48 @@ export default function ChatPage() {
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log('Form values:', values);
-      toast.success('Trip planning started!');
+      handleSearch(values)
     }
   });
 
-  useEffect(() => {
+  const handleSearch = (values: any) => {
+    setIsLoading(true)
+    let data = {
+      from: values.from,
+      destination: values.destination,
+      // @ts-ignore
+      startDate: values.startDate.format("YYYY-MM-DD"),
+      // @ts-ignore
+      endDate: values.endDate.format("YYYY-MM-DD")
+    }
+    let newChatHistory = [
+      {
+        role: "system",
+        content: [
+          {
+            type: "text",
+            text: "You are an AI travel planner  you will plan the user's trip by:\n\nProviding estimated average flight prices.\nSuggesting transportation options from the airport to the city center, including estimated costs.\nRecommending accommodation options with average prices.\nCreating a detailed itinerary with a daily and hourly schedule of places to visit within the given travel dates."
+          }
+        ]
+      },
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: `From: ${data.from} To: ${data.destination} StartDate: ${data.startDate} EndDate: ${data.endDate}`
+          }
+        ]
+      }
+    ];
+    chatService.sendMessage(newChatHistory).then((res) => {
+      setChatHistory([...newChatHistory, res.data])
+      setIsLoading(false)
+    })
+  }
+
+
+  useLayoutEffect(() => {
     const paramsToken = searchParams.get('token');
     if (paramsToken) {
       localStorage.setItem('token', paramsToken);
@@ -150,7 +169,20 @@ export default function ChatPage() {
   const hanndleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage('');
-    console.log('Message sent');
+    setIsLoading(true)
+    let newChatHistory = [
+      ...chatHistory,
+      {
+        role: "user",
+        content: [
+          { type: "text", text: message }
+        ]
+      }
+    ]
+    chatService.sendMessage(newChatHistory).then((res) => {
+      setChatHistory([...newChatHistory, res.data])
+      setIsLoading(false)
+    })
   }
 
   return (
@@ -340,7 +372,7 @@ export default function ChatPage() {
           }}>
             <div className={styles.chatScrollContainer}>
               <div className={styles.chatContainer}>
-                {chatHistory.map((message, index) => (
+                {chatHistory.map((message, index) => index > 1 && (
                   <div
                     key={index}
                     className={`${styles.messageWrapper} ${message.role === 'user' ? styles.userMessage : styles.systemMessage}`}
@@ -354,6 +386,17 @@ export default function ChatPage() {
                     </div>
                   </div>
                 ))}
+                {isLoading && (
+                  <div className={`${styles.messageWrapper} ${styles.systemMessage}`}>
+                    <div className={styles.messageBubble}>
+                      <div className={styles.typingIndicator}>
+                        <span className={styles.typingDot}></span>
+                        <span className={styles.typingDot}></span>
+                        <span className={styles.typingDot}></span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -368,7 +411,7 @@ export default function ChatPage() {
                     setMessage(e.target.value);
                   }}
                 />
-                <button type="submit" className={styles.sendButton}>
+                <button disabled={isLoading} type="submit" className={styles.sendButton}>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
