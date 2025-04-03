@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './admin.module.css';
 import api from '@/services/api';
 import { toast } from 'react-hot-toast';
@@ -11,6 +11,7 @@ interface User {
   provider: string;
   createdAt: string;
   queryCount: number;
+  lastLogin: string;
 }
 
 const AdminPage = () => {
@@ -18,6 +19,15 @@ const AdminPage = () => {
   const [password, setPassword] = useState('');
   const [users, setUsers] = useState<User[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const savedUsername = localStorage.getItem('adminUsername');
+    const savedPassword = localStorage.getItem('adminPassword');
+    if (savedUsername && savedPassword) {
+      setUsername(savedUsername);
+      setPassword(savedPassword);
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +38,8 @@ const AdminPage = () => {
       });
       setUsers(response.data.users);
       setIsLoggedIn(true);
+      localStorage.setItem('adminUsername', username);
+      localStorage.setItem('adminPassword', password);
       toast.success('Giriş başarılı!');
     } catch (error: any) {
       if (error.response?.status === 401) {
@@ -81,6 +93,7 @@ const AdminPage = () => {
                 <th>E-posta</th>
                 <th>Sağlayıcı</th>
                 <th>Kayıt Tarihi</th>
+                <th>Son Giriş</th>
                 <th>Sorgu Sayısı</th>
               </tr>
             </thead>
@@ -90,7 +103,16 @@ const AdminPage = () => {
                   <td>{user.name}</td>
                   <td>{user.email}</td>
                   <td>{user.provider}</td>
-                  <td>{new Date(user.createdAt).toLocaleDateString('tr-TR')}</td>
+                  <td>{new Date(user.createdAt).toLocaleDateString('tr-TR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  })}</td>
+                  <td>{new Date(user.lastLogin).toLocaleDateString('tr-TR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  })}</td>
                   <td>{user.queryCount}</td>
                 </tr>
               ))}
@@ -115,7 +137,19 @@ const AdminPage = () => {
                 </div>
                 <div>
                   <span>Kayıt Tarihi:</span>
-                  <span>{new Date(user.createdAt).toLocaleDateString('tr-TR')}</span>
+                  <span>{new Date(user.createdAt).toLocaleDateString('tr-TR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  })}</span>
+                </div>
+                <div>
+                  <span>Son Giriş:</span>
+                  <span>{new Date(user.lastLogin).toLocaleDateString('tr-TR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  })}</span>
                 </div>
                 <div>
                   <span>Sorgu Sayısı:</span>

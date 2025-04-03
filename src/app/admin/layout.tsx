@@ -3,7 +3,7 @@ import styles from './admin.module.css';
 import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
-  title: "Travel AI | Admin",
+  title: "Plan Voyage AI | Admin",
   description: "Plan your next trip with AI",
 };
 

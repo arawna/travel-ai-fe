@@ -288,7 +288,7 @@ function ChatPageContent() {
       <nav className={styles.navbar}>
         <div className={styles.navbarContainer}>
           <Link href="/chat" className={styles.logo}>
-            TRAVEL AI
+            PLAN VOYAGE AI
           </Link>
           <div className={styles.navbarRight}>
             <div className={styles.languageSelector} ref={languageMenuRef}>

@@ -19,7 +19,7 @@ export default function Home() {
         <div className={styles.navbarContainer}>
           <Link href="/" className={styles.logo}>
             <span className={styles.logoIcon}>🌍</span>
-            <span className={styles.logoText}>TRAVEL AI</span>
+            <span className={styles.logoText}>PLAN VOYAGE AI</span>
           </Link>
           <div className={styles.navLinks}>
             <Link href="/login" className={styles.navLink}>
@@ -29,11 +29,6 @@ export default function Home() {
               Get Started
             </Link>
           </div>
-          <button className={styles.mobileMenuButton}>
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
         </div>
       </nav>
 
@@ -72,7 +67,7 @@ export default function Home() {
 
       <section className={styles.featuresSection}>
         <div className={styles.featuresContainer}>
-          <h2 className={styles.sectionTitle}>Why Travel AI?</h2>
+          <h2 className={styles.sectionTitle}>Why Plan Voyage AI?</h2>
           <div className={styles.featuresGrid}>
             <div className={styles.featureCard}>
               <div className={styles.featureIcon}>✈️</div>
@@ -137,7 +132,7 @@ export default function Home() {
             <div className={styles.footerColumn}>
               <div className={styles.footerLogo}>
                 <span className={styles.logoIcon}>🌍</span>
-                <span className={styles.footerLogoText}>TRAVEL AI</span>
+                <span className={styles.footerLogoText}>PLAN VOYAGE AI</span>
               </div>
               <p className={styles.footerDescription}>
                 Experience the future of travel planning with AI-powered personalized recommendations.
@@ -185,7 +180,7 @@ export default function Home() {
 
           <div className={styles.footerBottom}>
             <p className={styles.copyright}>
-              © {new Date().getFullYear()} Travel AI. All rights reserved.
+              © {new Date().getFullYear()} Plan Voyage AI. All rights reserved.
             </p>
           </div>
         </div>

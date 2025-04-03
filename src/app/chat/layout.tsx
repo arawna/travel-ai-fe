@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import styles from './chat.module.css';
 
 export const metadata: Metadata = {
-  title: "Travel AI | Chat",
+  title: "Plan Voyage AI | Chat",
   description: "Plan your next trip with AI",
 };
 

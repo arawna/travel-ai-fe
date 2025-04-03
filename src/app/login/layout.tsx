@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import styles from './login.module.css';
 
 export const metadata: Metadata = {
-  title: "Travel AI | Login",
+  title: "Plan Voyage AI | Login",
   description: "Plan your next trip with AI",
 };
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import styles from './register.module.css';
 
 export const metadata: Metadata = {
-  title: "Travel AI | Register",
+  title: "Plan Voyage AI | Register",
   description: "Plan your next trip with AI",
 };
 
