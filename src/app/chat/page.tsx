@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState, useRef, useLayoutEffect } from 'react'
+import React, { useEffect, useState, useRef, useLayoutEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'react-toastify'
 import authService from '@/services/authService'
@@ -25,7 +25,7 @@ import updateLocale from 'dayjs/plugin/updateLocale' // Locale güncelleme eklen
 dayjs.extend(updateLocale)
 dayjs.locale('tr') // Türkçe locale'i kullan
 
-export default function ChatPage() {
+function ChatPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
@@ -518,4 +518,12 @@ export default function ChatPage() {
       </div>
     </div>
   )
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ChatPageContent />
+    </Suspense>
+  );
 }
