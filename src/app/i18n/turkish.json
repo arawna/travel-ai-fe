@@ -1,0 +1,39 @@
+{
+  "navbar": {
+    "title": "SEYAHAT AI",
+    "changeLanguage": "Dil değiştir",
+    "userMenu": {
+      "profile": "Profil",
+      "settings": "Ayarlar",
+      "logout": "Çıkış Yap"
+    }
+  },
+  "form": {
+    "from": "Nereden",
+    "destination": "Nereye gitmek istiyorsunuz?",
+    "startDate": "Başlangıç Tarihi",
+    "endDate": "Bitiş Tarihi",
+    "planTrip": "Seyahatini Planla"
+  },
+  "chat": {
+    "typePlaceholder": "Mesajınızı buraya yazın..."
+  },
+  "validation": {
+    "from": {
+      "required": "Nereden alanı zorunludur",
+      "min": "Nereden alanı en az 2 karakter olmalıdır"
+    },
+    "destination": {
+      "required": "Nereye alanı zorunludur",
+      "min": "Nereye alanı en az 2 karakter olmalıdır"
+    },
+    "startDate": {
+      "required": "Başlangıç tarihi zorunludur",
+      "past": "Başlangıç tarihi geçmiş bir tarih olamaz"
+    },
+    "endDate": {
+      "required": "Bitiş tarihi zorunludur",
+      "afterStart": "Bitiş tarihi başlangıç tarihinden sonra olmalıdır"
+    }
+  }
+}

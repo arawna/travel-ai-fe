@@ -18,29 +18,55 @@ export default function Home() {
       <nav className={styles.navbar}>
         <div className={styles.navbarContainer}>
           <Link href="/" className={styles.logo}>
-            TRAVEL AI
+            <span className={styles.logoIcon}>🌍</span>
+            <span className={styles.logoText}>TRAVEL AI</span>
           </Link>
           <div className={styles.navLinks}>
             <Link href="/login" className={styles.navLink}>
               Login
             </Link>
-            <Link href="/register" className={styles.navLink}>
-              Register
+            <Link href="/register" className={styles.navButton}>
+              Get Started
             </Link>
           </div>
+          <button className={styles.mobileMenuButton}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
         </div>
       </nav>
 
       <section className={styles.heroSection}>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle}>The Future of Travel Planning with AI</h1>
-          <p className={styles.heroSubtitle}>
-            Travel AI uses specially trained artificial intelligence technology to simplify your travel planning. 
-            Create personalized travel plans based on your budget, preferences, and dreams.
-          </p>
-          <Link href="/register">
-            <button className={styles.ctaButton}>Get Started</button>
-          </Link>
+          <div className={styles.heroLeft}>
+            <div className={styles.gradientBadge}>
+              <span className={styles.badgeIcon}>🤖</span>
+              AI-Powered Travel Planning
+            </div>
+            <h1 className={styles.heroTitle}>
+              Experience Smart
+              <span className={styles.gradientText}> Travel Planning</span>
+              <br />
+              Powered by AI
+            </h1>
+            <p className={styles.heroSubtitle}>
+              Let our AI create your perfect journey. Get personalized travel plans tailored to your 
+              <span className={styles.highlightText}> preferences</span>,
+              <span className={styles.highlightText}> budget</span>, and
+              <span className={styles.highlightText}> dreams</span>.
+            </p>
+            <div className={styles.ctaContainer}>
+              <Link href="/register" className={styles.ctaButton}>
+                Start Planning Now
+                <span className={styles.ctaArrow}>→</span>
+              </Link>
+              <div className={styles.statsBadge}>
+                <span className={styles.statsNumber}>50K+</span>
+                <span className={styles.statsText}>Travel Plans Created</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -104,6 +130,66 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <footer className={styles.footer}>
+        <div className={styles.footerContent}>
+          <div className={styles.footerGrid}>
+            <div className={styles.footerColumn}>
+              <div className={styles.footerLogo}>
+                <span className={styles.logoIcon}>🌍</span>
+                <span className={styles.footerLogoText}>TRAVEL AI</span>
+              </div>
+              <p className={styles.footerDescription}>
+                Experience the future of travel planning with AI-powered personalized recommendations.
+              </p>
+              <div className={styles.socialLinks}>
+                <a href="#" className={styles.socialLink}>Twitter</a>
+                <a href="#" className={styles.socialLink}>LinkedIn</a>
+                <a href="#" className={styles.socialLink}>Instagram</a>
+              </div>
+            </div>
+
+            <div className={styles.footerColumn}>
+              <h3 className={styles.footerTitle}>Company</h3>
+              <Link href="/about" className={styles.footerLink}>About Us</Link>
+              <Link href="/careers" className={styles.footerLink}>Careers</Link>
+              <Link href="/press" className={styles.footerLink}>Press</Link>
+              <Link href="/blog" className={styles.footerLink}>Blog</Link>
+            </div>
+
+            <div className={styles.footerColumn}>
+              <h3 className={styles.footerTitle}>Support</h3>
+              <Link href="/help" className={styles.footerLink}>Help Center</Link>
+              <Link href="/contact" className={styles.footerLink}>Contact Us</Link>
+              <Link href="/privacy" className={styles.footerLink}>Privacy Policy</Link>
+              <Link href="/terms" className={styles.footerLink}>Terms of Service</Link>
+            </div>
+
+            <div className={styles.footerColumn}>
+              <h3 className={styles.footerTitle}>Newsletter</h3>
+              <p className={styles.newsletterText}>
+                Subscribe to our newsletter for travel tips and updates.
+              </p>
+              <div className={styles.newsletterForm}>
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className={styles.newsletterInput}
+                />
+                <button className={styles.newsletterButton}>
+                  Subscribe
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.footerBottom}>
+            <p className={styles.copyright}>
+              © {new Date().getFullYear()} Travel AI. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

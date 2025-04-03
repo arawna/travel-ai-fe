@@ -1,0 +1,39 @@
+{
+  "navbar": {
+    "title": "TRAVEL AI",
+    "changeLanguage": "Change language",
+    "userMenu": {
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Logout"
+    }
+  },
+  "form": {
+    "from": "From",
+    "destination": "Where do you want to go?",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "planTrip": "Plan Your Trip"
+  },
+  "chat": {
+    "typePlaceholder": "Type your message here..."
+  },
+  "validation": {
+    "from": {
+      "required": "From is required",
+      "min": "From must be at least 2 characters"
+    },
+    "destination": {
+      "required": "Destination is required",
+      "min": "Destination must be at least 2 characters"
+    },
+    "startDate": {
+      "required": "Start date is required",
+      "past": "Start date cannot be in the past"
+    },
+    "endDate": {
+      "required": "End date is required",
+      "afterStart": "End date must be after start date"
+    }
+  }
+}

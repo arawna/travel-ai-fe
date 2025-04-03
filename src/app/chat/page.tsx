@@ -16,39 +16,81 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import dayjs from 'dayjs'
 import chatService from '@/services/chatService'
+import englishTranslations from '@/app/i18n/english.json';
+import turkishTranslations from '@/app/i18n/turkish.json';
+import 'dayjs/locale/tr' // Türkçe desteği için
+import updateLocale from 'dayjs/plugin/updateLocale' // Locale güncelleme eklentisi
+
+// dayjs plugins ve locale ayarları
+dayjs.extend(updateLocale)
+dayjs.locale('tr') // Türkçe locale'i kullan
 
 export default function ChatPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState('English');
+  
+  // Başlangıçta localStorage'dan dil seçimini al veya varsayılan olarak English kullan
+  const [currentLanguage, setCurrentLanguage] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('selectedLanguage') || 'English';
+    }
+    return 'English';
+  });
+
   const languageMenuRef = useRef<HTMLDivElement | null>(null);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const [translations, setTranslations] = useState(englishTranslations);
 
-  // Form validation schema
-  const validationSchema = Yup.object({
-    from: Yup.string()
-      .required('From is required')
-      .min(2, 'From must be at least 2 characters'),
-    destination: Yup.string()
-      .required('Destination is required')
-      .min(2, 'Destination must be at least 2 characters'),
-    startDate: Yup.date()
-      .required('Start date is required')
-      .min(dayjs().subtract(1, 'day').toDate(), 'Start date cannot be in the past'),
-    endDate: Yup.date()
-      .required('End date is required')
-      .min(
-        Yup.ref('startDate'),
-        'End date must be after start date'
-      )
-  });
+  // Form validation schema'yı useEffect içinde oluşturalım
+  const [validationSchema, setValidationSchema] = useState(
+    Yup.object({
+      from: Yup.string()
+        .required(translations.validation.from.required)
+        .min(2, translations.validation.from.min),
+      destination: Yup.string()
+        .required(translations.validation.destination.required)
+        .min(2, translations.validation.destination.min),
+      startDate: Yup.date()
+        .required(translations.validation.startDate.required)
+        .min(dayjs().subtract(1, 'day').toDate(), translations.validation.startDate.past),
+      endDate: Yup.date()
+        .required(translations.validation.endDate.required)
+        .min(
+          Yup.ref('startDate'),
+          translations.validation.endDate.afterStart
+        )
+    })
+  );
 
-  // Formik setup
+  // Dil değiştiğinde validation schema'yı güncelle
+  useEffect(() => {
+    setValidationSchema(
+      Yup.object({
+        from: Yup.string()
+          .required(translations.validation.from.required)
+          .min(2, translations.validation.from.min),
+        destination: Yup.string()
+          .required(translations.validation.destination.required)
+          .min(2, translations.validation.destination.min),
+        startDate: Yup.date()
+          .required(translations.validation.startDate.required)
+          .min(dayjs().subtract(1, 'day').toDate(), translations.validation.startDate.past),
+        endDate: Yup.date()
+          .required(translations.validation.endDate.required)
+          .min(
+            Yup.ref('startDate'),
+            translations.validation.endDate.afterStart
+          )
+      })
+    );
+  }, [translations]);
+
+  // Formik setup'ı güncelle
   const formik = useFormik({
     initialValues: {
       from: '',
@@ -56,7 +98,8 @@ export default function ChatPage() {
       startDate: null,
       endDate: null
     },
-    validationSchema,
+    validationSchema, // artık dinamik schema'yı kullan
+    enableReinitialize: true, // validation mesajları değiştiğinde yeniden başlatılmasını sağlar
     onSubmit: (values) => {
       handleSearch(values)
     }
@@ -87,7 +130,7 @@ export default function ChatPage() {
         content: [
           {
             type: "text",
-            text: `From: ${data.from} To: ${data.destination} StartDate: ${data.startDate} EndDate: ${data.endDate}`
+            text: `From: ${data.from} To: ${data.destination} StartDate: ${data.startDate} EndDate: ${data.endDate} ResponseLanguage: ${currentLanguage}`
           }
         ]
       }
@@ -154,10 +197,19 @@ export default function ChatPage() {
 
   const changeLanguage = (language: string) => {
     setCurrentLanguage(language);
+    setTranslations(language === 'English' ? englishTranslations : turkishTranslations);
+    localStorage.setItem('selectedLanguage', language);
     setShowLanguageMenu(false);
-    // Burada dil değiştirme mantığı eklenebilir
-    console.log(`Language changed to: ${language}`);
   };
+
+  // İlk yüklemede dil ayarını yap
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem('selectedLanguage');
+    if (savedLanguage) {
+      setCurrentLanguage(savedLanguage);
+      setTranslations(savedLanguage === 'English' ? englishTranslations : turkishTranslations);
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -179,11 +231,57 @@ export default function ChatPage() {
         ]
       }
     ]
+    setChatHistory([...newChatHistory])
     chatService.sendMessage(newChatHistory).then((res) => {
       setChatHistory([...newChatHistory, res.data])
       setIsLoading(false)
     })
   }
+
+  const formatMessage = (text: string) => {
+    // Split into sections by triple dashes
+    const sections = text.split('---').map(section => section.trim());
+    
+    const processBoldText = (text: string) => {
+      const parts = text.split(/(\*\*[^*]+\*\*)/g);
+      return parts.map((part, index) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          return <strong key={index}>{part.slice(2, -2)}</strong>;
+        }
+        return <span key={index}>{part}</span>;
+      });
+    };
+
+    return (
+      <div className={styles.formattedMessage}>
+        {sections.map((section, idx) => (
+          <div key={idx} className={styles.messageSection}>
+            {section.split('\n').map((line, lineIdx) => {
+              // Handle headers
+              if (line.startsWith('###')) {
+                return <h3 key={lineIdx}>{line.replace('###', '').trim()}</h3>;
+              }
+              // Handle subheaders
+              if (line.startsWith('####')) {
+                return <h4 key={lineIdx}>{line.replace('####', '').trim()}</h4>;
+              }
+              // Handle list items
+              if (line.startsWith('-') || line.match(/^\d+\./)) {
+                const trimmedLine = line.replace(/^-|\d+\./, '').trim();
+                return <li key={lineIdx}>{processBoldText(trimmedLine)}</li>;
+              }
+              // Handle all other lines (including those with bold text)
+              return <p key={lineIdx}>{processBoldText(line)}</p>;
+            })}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    setTranslations(currentLanguage === 'English' ? englishTranslations : turkishTranslations);
+  }, [currentLanguage]);
 
   return (
     <div className={styles.backgroundWrapper}>
@@ -197,7 +295,7 @@ export default function ChatPage() {
               <div
                 className={styles.iconButton}
                 onClick={toggleLanguageMenu}
-                title="Change language"
+                title={translations.navbar.changeLanguage}
               >
                 <LanguageIcon />
               </div>
@@ -214,18 +312,6 @@ export default function ChatPage() {
                     onClick={() => changeLanguage('Türkçe')}
                   >
                     Türkçe
-                  </div>
-                  <div
-                    className={`${styles.languageOption} ${currentLanguage === 'Español' ? styles.activeLanguage : ''}`}
-                    onClick={() => changeLanguage('Español')}
-                  >
-                    Español
-                  </div>
-                  <div
-                    className={`${styles.languageOption} ${currentLanguage === 'Français' ? styles.activeLanguage : ''}`}
-                    onClick={() => changeLanguage('Français')}
-                  >
-                    Français
                   </div>
                 </div>
               )}
@@ -257,7 +343,7 @@ export default function ChatPage() {
                   </div>
                   <div className={styles.userMenuDivider}></div> */}
                   <div className={styles.userMenuOption} onClick={handleLogout}>
-                    Logout
+                    {translations.navbar.userMenu.logout}
                   </div>
                 </div>
               )}
@@ -279,7 +365,7 @@ export default function ChatPage() {
                   style={{ width: "100%" }}
                   id="from"
                   name="from"
-                  label="From"
+                  label={translations.form.from}
                   variant="outlined"
                   value={formik.values.from}
                   onChange={formik.handleChange}
@@ -293,7 +379,7 @@ export default function ChatPage() {
                   style={{ width: "100%" }}
                   id="destination"
                   name="destination"
-                  label="Where do you want to go?"
+                  label={translations.form.destination}
                   variant="outlined"
                   value={formik.values.destination}
                   onChange={formik.handleChange}
@@ -303,13 +389,17 @@ export default function ChatPage() {
                 />
               </Grid2>
               <Grid2 size={{ xs: 12, md: 3 }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider 
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale={currentLanguage === 'English' ? 'en' : 'tr'}
+                >
                   <DatePicker
                     sx={{ width: "100%" }}
-                    label="Start Date"
+                    label={translations.form.startDate}
                     value={formik.values.startDate}
                     onChange={(date) => formik.setFieldValue('startDate', date)}
                     onClose={() => formik.setFieldTouched('startDate', true)}
+                    format="DD/MM/YYYY"
                     slotProps={{
                       textField: {
                         error: formik.touched.startDate && Boolean(formik.errors.startDate),
@@ -320,13 +410,17 @@ export default function ChatPage() {
                 </LocalizationProvider>
               </Grid2>
               <Grid2 size={{ xs: 12, md: 3 }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider 
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale={currentLanguage === 'English' ? 'en' : 'tr'}
+                >
                   <DatePicker
                     sx={{ width: "100%" }}
-                    label="End Date"
+                    label={translations.form.endDate}
                     value={formik.values.endDate}
                     onChange={(date) => formik.setFieldValue('endDate', date)}
                     onClose={() => formik.setFieldTouched('endDate', true)}
+                    format="DD/MM/YYYY"
                     slotProps={{
                       textField: {
                         error: formik.touched.endDate && Boolean(formik.errors.endDate),
@@ -352,7 +446,7 @@ export default function ChatPage() {
                 cursor: "pointer"
               }}
             >
-              Plan Your Trip
+              {translations.form.planTrip}
             </button>
           </div>
         </form>
@@ -380,7 +474,7 @@ export default function ChatPage() {
                     <div className={styles.messageBubble}>
                       {message.content.map((content: any, contentIndex: number) => (
                         <div key={contentIndex}>
-                          {content.type === 'text' && content.text}
+                          {content.type === 'text' && formatMessage(content.text)}
                         </div>
                       ))}
                     </div>
@@ -404,7 +498,7 @@ export default function ChatPage() {
               <div className={styles.messageInputContainer}>
                 <textarea
                   className={styles.messageInput}
-                  placeholder="Type your message here..."
+                  placeholder={translations.chat.typePlaceholder}
                   rows={2}
                   value={message}
                   onChange={(e) => {

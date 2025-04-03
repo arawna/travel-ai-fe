@@ -342,3 +342,40 @@
 .sendButton:active {
   transform: scale(0.95);
 }
+
+.formattedMessage {
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.formattedMessage strong {
+  font-weight: 600;
+}
+
+.messageSection {
+  margin-bottom: 20px;
+}
+
+.messageSection h3 {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin: 15px 0 10px 0;
+  color: #2c3e50;
+}
+
+.messageSection h4 {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 12px 0 8px 0;
+  color: #34495e;
+}
+
+.messageSection p, 
+.messageSection li {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.messageSection li {
+  margin-left: 20px;
+}
