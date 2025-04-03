@@ -434,6 +434,7 @@ function ChatPageContent() {
           </div>
           <div style={{ textAlign: "center", marginTop: "20px" }}>
             <button
+              disabled={isLoading}
               type="submit"
               style={{
                 backgroundColor: "#8F55FF",
