@@ -41,6 +41,19 @@ function ChatPageContent() {
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isPlanned, setIsPlanned] = useState(false);
+
+  const handleClickPlanAgain = () => {
+    setIsPlanned(false)
+    setChatHistory([])
+    formik.setValues({
+      from: '',
+      destination: '',
+      startDate: null,
+      endDate: null,
+      keyWords: [],
+      initialMessage: ''
+    })
+  }
   
   // Başlangıçta localStorage'dan dil seçimini al veya varsayılan olarak English kullan
   const [currentLanguage, setCurrentLanguage] = useState(() => {
@@ -687,7 +700,7 @@ function ChatPageContent() {
                 cursor: "pointer",
                 marginBottom: "20px"
               }}
-              onClick={() => setIsPlanned(false)}
+              onClick={() => handleClickPlanAgain()}
             >
               {translations.form.planNewTrip}
             </button>
