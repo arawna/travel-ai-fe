@@ -13,7 +13,27 @@
     "destination": "Nereye gitmek istiyorsunuz?",
     "startDate": "Başlangıç Tarihi",
     "endDate": "Bitiş Tarihi",
-    "planTrip": "Seyahatini Planla"
+    "keyWords": {
+      "label": "Anahtar Kelimeler",
+      "placeholder": "Anahtar kelime seçiniz"
+    },
+    "initialMessage": "Mesaj",
+    "planTrip": "Seyahatini Planla",
+    "planNewTrip": "Yeni Seyahat Planla",
+    "keyWordOptions": [
+      "Ekonomik",
+      "Lüks",
+      "İş",
+      "Yemek",
+      "Dinlenme",
+      "Kültür",
+      "Tarih",
+      "Tropik",
+      "Doğa Yürüyüşü",
+      "Sırt Çantası",
+      "Gece Hayatı",
+      "Doğa"
+    ]
   },
   "chat": {
     "typePlaceholder": "Mesajınızı buraya yazın..."
@@ -34,6 +54,11 @@
     "endDate": {
       "required": "Bitiş tarihi zorunludur",
       "afterStart": "Bitiş tarihi başlangıç tarihinden sonra olmalıdır"
+    },
+    "keyWords": {
+      "required": "Lütfen en az bir anahtar kelime seçiniz",
+      "min": "Lütfen en az 1 anahtar kelime seçiniz",
+      "max": "En fazla 3 anahtar kelime seçebilirsiniz"
     }
   }
 }

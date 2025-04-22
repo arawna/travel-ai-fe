@@ -13,7 +13,27 @@
     "destination": "Where do you want to go?",
     "startDate": "Start Date",
     "endDate": "End Date",
-    "planTrip": "Plan Your Trip"
+    "keyWords": {
+      "label": "Key Words",
+      "placeholder": "Select key words"
+    },
+    "initialMessage": "Message",
+    "planTrip": "Plan Your Trip",
+    "planNewTrip": "Plan New Trip",
+    "keyWordOptions": [
+      "Budget",
+      "Luxury",
+      "Business",
+      "Food",
+      "Relax",
+      "Culture",
+      "History",
+      "Tropical",
+      "Hiking",
+      "Backpacking",
+      "Nightlife",
+      "Nature"
+    ]
   },
   "chat": {
     "typePlaceholder": "Type your message here..."
@@ -34,6 +54,11 @@
     "endDate": {
       "required": "End date is required",
       "afterStart": "End date must be after start date"
+    },
+    "keyWords": {
+      "required": "Please select at least one keyword",
+      "min": "Please select at least 1 keyword",
+      "max": "You can select maximum 3 keywords"
     }
   }
 }

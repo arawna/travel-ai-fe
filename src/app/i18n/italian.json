@@ -1,0 +1,64 @@
+{
+  "navbar": {
+    "title": "PLAN VOYAGE AI",
+    "changeLanguage": "Cambia lingua",
+    "userMenu": {
+      "profile": "Profilo",
+      "settings": "Impostazioni",
+      "logout": "Disconnetti"
+    }
+  },
+  "form": {
+    "from": "Da",
+    "destination": "Dove vuoi andare?",
+    "startDate": "Data di inizio",
+    "endDate": "Data di fine",
+    "keyWords": {
+      "label": "Parole chiave",
+      "placeholder": "Seleziona parole chiave"
+    },
+    "initialMessage": "Messaggio",
+    "planTrip": "Pianifica il tuo viaggio",
+    "planNewTrip": "Pianifica un nuovo viaggio",
+    "keyWordOptions": [
+      "Economico",
+      "Lusso",
+      "Affari",
+      "Gastronomia",
+      "Relax",
+      "Cultura",
+      "Storia",
+      "Tropicale",
+      "Escursionismo",
+      "Zaino in spalla",
+      "Vita notturna",
+      "Natura"
+    ]
+  },
+  "chat": {
+    "typePlaceholder": "Scrivi il tuo messaggio qui..."
+  },
+  "validation": {
+    "from": {
+      "required": "Il luogo di partenza è obbligatorio",
+      "min": "Il luogo di partenza deve avere almeno 2 caratteri"
+    },
+    "destination": {
+      "required": "La destinazione è obbligatoria",
+      "min": "La destinazione deve avere almeno 2 caratteri"
+    },
+    "startDate": {
+      "required": "La data di inizio è obbligatoria",
+      "past": "La data di inizio non può essere nel passato"
+    },
+    "endDate": {
+      "required": "La data di fine è obbligatoria",
+      "afterStart": "La data di fine deve essere successiva alla data di inizio"
+    },
+    "keyWords": {
+      "required": "Seleziona almeno una parola chiave",
+      "min": "Seleziona almeno 1 parola chiave",
+      "max": "Puoi selezionare al massimo 3 parole chiave"
+    }
+  }
+} 

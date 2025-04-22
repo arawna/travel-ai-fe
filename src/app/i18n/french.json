@@ -1,0 +1,64 @@
+{
+  "navbar": {
+    "title": "PLAN VOYAGE AI",
+    "changeLanguage": "Changer de langue",
+    "userMenu": {
+      "profile": "Profil",
+      "settings": "Paramètres",
+      "logout": "Déconnexion"
+    }
+  },
+  "form": {
+    "from": "De",
+    "destination": "Où voulez-vous aller?",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "keyWords": {
+      "label": "Mots-clés",
+      "placeholder": "Sélectionner des mots-clés"
+    },
+    "initialMessage": "Message",
+    "planTrip": "Planifier votre voyage",
+    "planNewTrip": "Planifier un nouveau voyage",
+    "keyWordOptions": [
+      "Budget",
+      "Luxe",
+      "Affaires",
+      "Gastronomie",
+      "Détente",
+      "Culture",
+      "Histoire",
+      "Tropical",
+      "Randonnée",
+      "Routard",
+      "Vie nocturne",
+      "Nature"
+    ]
+  },
+  "chat": {
+    "typePlaceholder": "Écrivez votre message ici..."
+  },
+  "validation": {
+    "from": {
+      "required": "Le lieu de départ est requis",
+      "min": "Le lieu de départ doit comporter au moins 2 caractères"
+    },
+    "destination": {
+      "required": "La destination est requise",
+      "min": "La destination doit comporter au moins 2 caractères"
+    },
+    "startDate": {
+      "required": "La date de début est requise",
+      "past": "La date de début ne peut pas être dans le passé"
+    },
+    "endDate": {
+      "required": "La date de fin est requise",
+      "afterStart": "La date de fin doit être postérieure à la date de début"
+    },
+    "keyWords": {
+      "required": "Veuillez sélectionner au moins un mot-clé",
+      "min": "Veuillez sélectionner au moins 1 mot-clé",
+      "max": "Vous pouvez sélectionner maximum 3 mots-clés"
+    }
+  }
+} 

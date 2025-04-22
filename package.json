@@ -16,6 +16,7 @@
     "axios": "^1.8.1",
     "dayjs": "^1.11.13",
     "formik": "^2.4.6",
+    "loadash": "^1.0.0",
     "next": "15.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -24,6 +25,7 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.16",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

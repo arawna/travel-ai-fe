@@ -1,0 +1,64 @@
+{
+  "navbar": {
+    "title": "PLAN VOYAGE AI",
+    "changeLanguage": "Sprache ändern",
+    "userMenu": {
+      "profile": "Profil",
+      "settings": "Einstellungen",
+      "logout": "Abmelden"
+    }
+  },
+  "form": {
+    "from": "Von",
+    "destination": "Wohin möchten Sie reisen?",
+    "startDate": "Startdatum",
+    "endDate": "Enddatum",
+    "keyWords": {
+      "label": "Schlüsselwörter",
+      "placeholder": "Schlüsselwörter auswählen"
+    },
+    "initialMessage": "Nachricht",
+    "planTrip": "Reise planen",
+    "planNewTrip": "Neue Reise planen",
+    "keyWordOptions": [
+      "Budget",
+      "Luxus",
+      "Geschäftlich",
+      "Gastronomie",
+      "Entspannung",
+      "Kultur",
+      "Geschichte",
+      "Tropisch",
+      "Wandern",
+      "Backpacking",
+      "Nachtleben",
+      "Natur"
+    ]
+  },
+  "chat": {
+    "typePlaceholder": "Schreiben Sie Ihre Nachricht hier..."
+  },
+  "validation": {
+    "from": {
+      "required": "Abfahrtsort ist erforderlich",
+      "min": "Abfahrtsort muss mindestens 2 Zeichen lang sein"
+    },
+    "destination": {
+      "required": "Reiseziel ist erforderlich",
+      "min": "Reiseziel muss mindestens 2 Zeichen lang sein"
+    },
+    "startDate": {
+      "required": "Startdatum ist erforderlich",
+      "past": "Startdatum kann nicht in der Vergangenheit liegen"
+    },
+    "endDate": {
+      "required": "Enddatum ist erforderlich",
+      "afterStart": "Enddatum muss nach dem Startdatum liegen"
+    },
+    "keyWords": {
+      "required": "Bitte wählen Sie mindestens ein Schlüsselwort",
+      "min": "Bitte wählen Sie mindestens 1 Schlüsselwort",
+      "max": "Sie können maximal 3 Schlüsselwörter auswählen"
+    }
+  }
+} 

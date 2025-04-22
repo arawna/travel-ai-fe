@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState, useRef, useLayoutEffect, Suspense } from 'react'
+import React, { useEffect, useState, useRef, useLayoutEffect, Suspense, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'react-toastify'
 import authService from '@/services/authService'
@@ -8,28 +8,39 @@ import UserIcon from '@/components/icons/UserIcon'
 import LanguageIcon from '@/components/icons/LanguageIcon'
 import Link from 'next/link'
 import ChatGptIcon from '@/components/icons/ChatGptIcon'
-import { Container, Grid2, TextField } from '@mui/material'
+import { Autocomplete, Container, Grid2, TextField } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik'
+import debounce from 'lodash/debounce';
 import * as Yup from 'yup'
 import dayjs from 'dayjs'
 import chatService from '@/services/chatService'
 import englishTranslations from '@/app/i18n/english.json';
 import turkishTranslations from '@/app/i18n/turkish.json';
+import spanishTranslations from '@/app/i18n/spanish.json';
+import frenchTranslations from '@/app/i18n/french.json';
+import italianTranslations from '@/app/i18n/italian.json';
+import germanTranslations from '@/app/i18n/german.json';
 import 'dayjs/locale/tr' // Türkçe desteği için
+import 'dayjs/locale/es' // Spanish support
+import 'dayjs/locale/fr' // French support
+import 'dayjs/locale/it' // Italian support
+import 'dayjs/locale/de' // German support
 import updateLocale from 'dayjs/plugin/updateLocale' // Locale güncelleme eklentisi
 
 // dayjs plugins ve locale ayarları
 dayjs.extend(updateLocale)
-dayjs.locale('tr') // Türkçe locale'i kullan
+// Varsayılan olarak İngilizce kullan, dil değişikliğinde güncellenecek
+dayjs.locale('en')
 
 function ChatPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isPlanned, setIsPlanned] = useState(false);
   
   // Başlangıçta localStorage'dan dil seçimini al veya varsayılan olarak English kullan
   const [currentLanguage, setCurrentLanguage] = useState(() => {
@@ -63,7 +74,11 @@ function ChatPageContent() {
         .min(
           Yup.ref('startDate'),
           translations.validation.endDate.afterStart
-        )
+        ),
+      keyWords: Yup.array()
+        .min(1, translations.validation.keyWords.min)
+        .max(3, translations.validation.keyWords.max)
+        .required(translations.validation.keyWords.required)
     })
   );
 
@@ -85,7 +100,11 @@ function ChatPageContent() {
           .min(
             Yup.ref('startDate'),
             translations.validation.endDate.afterStart
-          )
+          ),
+        keyWords: Yup.array()
+          .min(1, translations.validation.keyWords.min)
+          .max(3, translations.validation.keyWords.max)
+          .required(translations.validation.keyWords.required)
       })
     );
   }, [translations]);
@@ -96,7 +115,9 @@ function ChatPageContent() {
       from: '',
       destination: '',
       startDate: null,
-      endDate: null
+      endDate: null,
+      keyWords: [],
+      initialMessage: ''
     },
     validationSchema, // artık dinamik schema'yı kullan
     enableReinitialize: true, // validation mesajları değiştiğinde yeniden başlatılmasını sağlar
@@ -106,6 +127,7 @@ function ChatPageContent() {
   });
 
   const handleSearch = (values: any) => {
+    setIsPlanned(true)
     setIsLoading(true)
     let data = {
       from: values.from,
@@ -113,8 +135,18 @@ function ChatPageContent() {
       // @ts-ignore
       startDate: values.startDate.format("YYYY-MM-DD"),
       // @ts-ignore
-      endDate: values.endDate.format("YYYY-MM-DD")
+      endDate: values.endDate.format("YYYY-MM-DD"),
+      keyWords: values.keyWords,
+      initialMessage: values.initialMessage
     }
+    
+    let messageText = `From: ${data.from} To: ${data.destination} StartDate: ${data.startDate} EndDate: ${data.endDate} Keywords: ${data.keyWords.join(', ')} ResponseLanguage: ${currentLanguage}`;
+    
+    // Add the initial message if it exists
+    if (data.initialMessage) {
+      messageText += `\n\nAdditional Information: ${data.initialMessage}`;
+    }
+    
     let newChatHistory = [
       {
         role: "system",
@@ -130,7 +162,7 @@ function ChatPageContent() {
         content: [
           {
             type: "text",
-            text: `From: ${data.from} To: ${data.destination} StartDate: ${data.startDate} EndDate: ${data.endDate} ResponseLanguage: ${currentLanguage}`
+            text: messageText
           }
         ]
       }
@@ -197,7 +229,35 @@ function ChatPageContent() {
 
   const changeLanguage = (language: string) => {
     setCurrentLanguage(language);
-    setTranslations(language === 'English' ? englishTranslations : turkishTranslations);
+    switch(language) {
+      case 'English':
+        setTranslations(englishTranslations);
+        dayjs.locale('en');
+        break;
+      case 'Türkçe':
+        setTranslations(turkishTranslations);
+        dayjs.locale('tr');
+        break;
+      case 'Español':
+        setTranslations(spanishTranslations);
+        dayjs.locale('es');
+        break;
+      case 'Français':
+        setTranslations(frenchTranslations);
+        dayjs.locale('fr');
+        break;
+      case 'Italiano':
+        setTranslations(italianTranslations);
+        dayjs.locale('it');
+        break;
+      case 'Deutsch':
+        setTranslations(germanTranslations);
+        dayjs.locale('de');
+        break;
+      default:
+        setTranslations(englishTranslations);
+        dayjs.locale('en');
+    }
     localStorage.setItem('selectedLanguage', language);
     setShowLanguageMenu(false);
   };
@@ -207,7 +267,35 @@ function ChatPageContent() {
     const savedLanguage = localStorage.getItem('selectedLanguage');
     if (savedLanguage) {
       setCurrentLanguage(savedLanguage);
-      setTranslations(savedLanguage === 'English' ? englishTranslations : turkishTranslations);
+      switch(savedLanguage) {
+        case 'English':
+          setTranslations(englishTranslations);
+          dayjs.locale('en');
+          break;
+        case 'Türkçe':
+          setTranslations(turkishTranslations);
+          dayjs.locale('tr');
+          break;
+        case 'Español':
+          setTranslations(spanishTranslations);
+          dayjs.locale('es');
+          break;
+        case 'Français':
+          setTranslations(frenchTranslations);
+          dayjs.locale('fr');
+          break;
+        case 'Italiano':
+          setTranslations(italianTranslations);
+          dayjs.locale('it');
+          break;
+        case 'Deutsch':
+          setTranslations(germanTranslations);
+          dayjs.locale('de');
+          break;
+        default:
+          setTranslations(englishTranslations);
+          dayjs.locale('en');
+      }
     }
   }, []);
 
@@ -237,6 +325,58 @@ function ChatPageContent() {
       setIsLoading(false)
     })
   }
+
+  const [fromOptions, setFromOptions] = useState<string[]>([]);
+  const searchFrom = useCallback(debounce((input:string) => {
+    chatService.search(input).then((res) => {
+      setFromOptions(res.data.data)
+    })
+  }, 1000), [])
+  const hacdleChangeFrom = (e:any) => {
+    formik.handleChange(e)
+    if (e.target.value.length > 2) {
+      searchFrom(e.target.value)
+    }
+  }
+
+  const [toOptions, setToOptions] = useState<string[]>([]);
+  const searchTo = useCallback(debounce((input:string) => {
+    chatService.search(input).then((res) => {
+      setToOptions(res.data.data)
+    })
+  }, 1000), [])
+  const handleChangeTo = (e:any) => {
+    formik.handleChange(e)
+    if (e.target.value.length > 2) {
+      searchTo(e.target.value)
+    }
+  }
+
+  const [keyWords, setKeyWords] = useState<string[]>(() => {
+    // Set initial keywords based on current language
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem('selectedLanguage');
+      if (savedLanguage) {
+        switch(savedLanguage) {
+          case 'English': return englishTranslations.form.keyWordOptions;
+          case 'Türkçe': return turkishTranslations.form.keyWordOptions;
+          case 'Español': return spanishTranslations.form.keyWordOptions;
+          case 'Français': return frenchTranslations.form.keyWordOptions;
+          case 'Italiano': return italianTranslations.form.keyWordOptions;
+          case 'Deutsch': return germanTranslations.form.keyWordOptions;
+          default: return englishTranslations.form.keyWordOptions;
+        }
+      }
+    }
+    // Default to English
+    return englishTranslations.form.keyWordOptions;
+  });
+  
+  // Update keywords when language changes
+  useEffect(() => {
+    // Set keywords based on selected language
+    setKeyWords(translations.form.keyWordOptions || []);
+  }, [translations]);
 
   const formatMessage = (text: string) => {
     // Split into sections by triple dashes
@@ -279,10 +419,6 @@ function ChatPageContent() {
     );
   };
 
-  useEffect(() => {
-    setTranslations(currentLanguage === 'English' ? englishTranslations : turkishTranslations);
-  }, [currentLanguage]);
-
   return (
     <div className={styles.backgroundWrapper}>
       <nav className={styles.navbar}>
@@ -312,6 +448,30 @@ function ChatPageContent() {
                     onClick={() => changeLanguage('Türkçe')}
                   >
                     Türkçe
+                  </div>
+                  <div
+                    className={`${styles.languageOption} ${currentLanguage === 'Español' ? styles.activeLanguage : ''}`}
+                    onClick={() => changeLanguage('Español')}
+                  >
+                    Español
+                  </div>
+                  <div
+                    className={`${styles.languageOption} ${currentLanguage === 'Français' ? styles.activeLanguage : ''}`}
+                    onClick={() => changeLanguage('Français')}
+                  >
+                    Français
+                  </div>
+                  <div
+                    className={`${styles.languageOption} ${currentLanguage === 'Italiano' ? styles.activeLanguage : ''}`}
+                    onClick={() => changeLanguage('Italiano')}
+                  >
+                    Italiano
+                  </div>
+                  <div
+                    className={`${styles.languageOption} ${currentLanguage === 'Deutsch' ? styles.activeLanguage : ''}`}
+                    onClick={() => changeLanguage('Deutsch')}
+                  >
+                    Deutsch
                   </div>
                 </div>
               )}
@@ -356,42 +516,63 @@ function ChatPageContent() {
         <span className={styles.chatGptIconText}>ChatGPT</span>
         <span className={styles.chatGptPlus}>Plus</span>
       </div>
-      <Container maxWidth="lg" style={{ marginTop: "20px" }}>
+      {!isPlanned && <Container maxWidth="lg" style={{ marginTop: "20px" }}>
         <form onSubmit={formik.handleSubmit}>
           <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '15px', opacity: ".95" }}>
             <Grid2 container spacing={2}>
               <Grid2 size={{ xs: 12, md: 3 }}>
-                <TextField
-                  style={{ width: "100%" }}
+                <Autocomplete
                   id="from"
-                  name="from"
-                  label={translations.form.from}
-                  variant="outlined"
-                  value={formik.values.from}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.from && Boolean(formik.errors.from)}
-                  helperText={formik.touched.from && formik.errors.from}
+                  freeSolo
+                  options={fromOptions}
+                  renderInput={(params) => 
+                    <TextField 
+                      {...params}
+                      style={{ width: "100%" }}
+                      name="from"
+                      label={translations.form.from}
+                      variant="outlined"
+                      value={formik.values.from}
+                      onChange={hacdleChangeFrom}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.from && Boolean(formik.errors.from)}
+                      helperText={formik.touched.from && formik.errors.from}
+                    />
+                  }
                 />
               </Grid2>
               <Grid2 size={{ xs: 12, md: 3 }}>
-                <TextField
-                  style={{ width: "100%" }}
+                <Autocomplete
                   id="destination"
-                  name="destination"
-                  label={translations.form.destination}
-                  variant="outlined"
-                  value={formik.values.destination}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.destination && Boolean(formik.errors.destination)}
-                  helperText={formik.touched.destination && formik.errors.destination}
+                  freeSolo
+                  options={toOptions}
+                  renderInput={(params) => 
+                    <TextField 
+                      {...params}
+                      style={{ width: "100%" }}
+                      name="destination"
+                      label={translations.form.destination}
+                      variant="outlined"
+                      value={formik.values.destination}
+                      onChange={handleChangeTo}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.destination && Boolean(formik.errors.destination)}
+                      helperText={formik.touched.destination && formik.errors.destination}
+                    />
+                  }
                 />
               </Grid2>
               <Grid2 size={{ xs: 12, md: 3 }}>
                 <LocalizationProvider 
                   dateAdapter={AdapterDayjs}
-                  adapterLocale={currentLanguage === 'English' ? 'en' : 'tr'}
+                  adapterLocale={
+                    currentLanguage === 'English' ? 'en' :
+                    currentLanguage === 'Türkçe' ? 'tr' :
+                    currentLanguage === 'Español' ? 'es' :
+                    currentLanguage === 'Français' ? 'fr' :
+                    currentLanguage === 'Italiano' ? 'it' :
+                    currentLanguage === 'Deutsch' ? 'de' : 'en'
+                  }
                 >
                   <DatePicker
                     sx={{ width: "100%" }}
@@ -412,7 +593,14 @@ function ChatPageContent() {
               <Grid2 size={{ xs: 12, md: 3 }}>
                 <LocalizationProvider 
                   dateAdapter={AdapterDayjs}
-                  adapterLocale={currentLanguage === 'English' ? 'en' : 'tr'}
+                  adapterLocale={
+                    currentLanguage === 'English' ? 'en' :
+                    currentLanguage === 'Türkçe' ? 'tr' :
+                    currentLanguage === 'Español' ? 'es' :
+                    currentLanguage === 'Français' ? 'fr' :
+                    currentLanguage === 'Italiano' ? 'it' :
+                    currentLanguage === 'Deutsch' ? 'de' : 'en'
+                  }
                 >
                   <DatePicker
                     sx={{ width: "100%" }}
@@ -429,6 +617,37 @@ function ChatPageContent() {
                     }}
                   />
                 </LocalizationProvider>
+              </Grid2>
+              <Grid2 size={{ xs: 12, md: 6}}>
+                <Autocomplete
+                  multiple
+                  id="keyWords"
+                  options={keyWords}
+                  value={formik.values.keyWords}
+                  onChange={(_, newValue) => formik.setFieldValue('keyWords', newValue)}
+                  onBlur={() => formik.setFieldTouched('keyWords', true)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label={translations.form.keyWords.label}
+                      placeholder={translations.form.keyWords.placeholder}
+                      error={formik.touched.keyWords && Boolean(formik.errors.keyWords)}
+                      helperText={formik.touched.keyWords && formik.errors.keyWords}
+                    />
+                  )}
+                />
+              </Grid2>
+              <Grid2 size={{ xs: 12, md: 6 }}>
+                <TextField 
+                  style={{ width: "100%" }}
+                  id="initialMessage"
+                  name="initialMessage"
+                  label={translations.form.initialMessage}
+                  variant="outlined"
+                  value={formik.values.initialMessage}
+                  onChange={formik.handleChange}
+                />
               </Grid2>
             </Grid2>
           </div>
@@ -451,10 +670,28 @@ function ChatPageContent() {
             </button>
           </div>
         </form>
-      </Container>
+      </Container>}
 
-      <div>
+      {isPlanned && <div>
         <Container maxWidth="lg" style={{ padding: "20px" }}>
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
+            <button
+              style={{
+                backgroundColor: "#8F55FF",
+                fontSize: "16px",
+                fontWeight: "bold",
+                color: "white",
+                padding: "10px 60px",
+                borderRadius: "15px",
+                border: "none",
+                cursor: "pointer",
+                marginBottom: "20px"
+              }}
+              onClick={() => setIsPlanned(false)}
+            >
+              {translations.form.planNewTrip}
+            </button>
+          </div>
           <div style={{
             background: "white",
             borderRadius: "15px",
@@ -516,7 +753,7 @@ function ChatPageContent() {
             </form>
           </div>
         </Container>
-      </div>
+      </div>}
     </div>
   )
 }
